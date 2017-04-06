@@ -1,0 +1,85 @@
+<resources>
+    <!-- Application -->
+    <string name="app_name">Educational Lifecycle</string>
+    <string name="log_trim_message">Далее записи были стерты по причине нехватки памяти.</string>
+
+    <!-- Main list item -->
+    <string name="info_main_header">О приложении</string>
+    <string name="info_main_description">
+        Это приложение является демонстрацией жизненного цикла Application, Activity, ViewGroup и View.
+        \n\n
+        Информация разделена на 5 экранов, расположенных горизонтально слева направо. На каждом экране
+        есть кнопка \"Показать лог\", которая демонстрирует вызовы функций жизненного цикла соответствующего
+        элемента.
+        \n\n
+        На этом экране кнопка покажет все вызовы со всех экранов. Попробуйте на нее нажать.
+        \n\n
+        После перемещения на другие экраны, общий лог станет быстро забит вызовами, поэтому рекомендуется
+        пользоваться кнопками с отборами.
+        \n\n
+        Код приложения содержит комментарии, позволяющие более подробно вникнуть в жизненный цикл на примерах.
+    </string>
+    <string name="info_application_header">Application</string>
+    <string name="info_application_description">
+        Жизненный цикл всего приложения начинается с Application.
+        \n\n
+        В этом приложении все вызовы к Application сохраняются в отдельный лог. Однако Вы никогда не
+        увидите вызова onTerminate и скорее всего не увидите onLowMemory, так как для него нужны
+        особые условия.
+        \n\n
+        В комментариях к коду описаны примеры использования функций. В этом приложении используется
+        onCreate для создания общего списка вызовов в контексте Application и onLowMemory вместе с
+        onTrimMemory для очистки списка до последних 10 записей в каждом разделе.
+        \n\n
+        Сейчас самое время нажать \"Показать лог\".
+    </string>
+    <string name="info_activity_header">Activity</string>
+    <string name="info_activity_description">
+        Сразу за Application следует главная Activity. Сейчас Вы видите как раз ее.
+        \n\n
+        Жизненный цикл любой Activity начинается с onCreate и заканчивается onDestroy. Для того, чтобы
+        отобразить Activity, после onCreate следует onStart и onResume. При открытии LogActivity с
+        ней возникает та же последовательность, но MainActivity сначала ставиться на паузу с onPause.
+        При возвращении в MainActivity, вызывается onRestart вместо уничтожения и повторного создания.
+        \n\n
+        В этом приложении onCreate используется для инициализации переменных, RecyclerView, LayoutManager
+        и адаптера. В LogActivity onCreate используется для получения данных из Intent, а onResume
+        для обновления данных.
+    </string>
+    <string name="info_viewgroup_header">ViewGroup</string>
+    <string name="info_viewgroup_description">
+        ViewGroup представляет собой древовидную структуру, предназначенную для отрисовки UI.
+        \n\n
+        ViewGroup предназначен для группировки элементов. Каждая Viewgroup ответственна за вызов
+        отрисовки вложенных View (вызывает draw для каждого View внутри нее).
+        \n\n
+        В этом приложении используется RecyclerView и ViewGroup рассматривается на его примере. В
+        лог записываются также вызовы создания адаптера, ViewHolder и привязки между ними.
+        \n\n
+        Жизненный цикл следующий: Создается новый объект RecyclerView, вызываются методы для расчета
+        размеров и определения Layout - рекурсивно по всем дочерним элементам, затем вызываются методы
+        для отрисовки onDraw тоже по всем (поэтому в логе их так много).
+        \n\n
+        onMeasure может тоже вызваться нескоько раз, вначале с неопределенными размерами, чтобы
+        узнать размеры элемента, а затем с реальными размерами.
+    </string>
+    <string name="info_view_header">View</string>
+    <string name="info_view_description">
+        View представляет собой базовый элемент для всех элементов интерфейса. Все элементы - это
+        наследники View. А View это наследник Object.
+        \n\n
+        В этом приложении View рассматривается на примере Button. Всего отрисовывается 5 разных Button
+        (т.к. 5 экранов и все они в RecyclerView), поэтому в логе им присвоены номера.
+        \n\n
+        Перемещаясь в разные стороны по приложению, разные Button создаются или повторно отрисовываются.
+    </string>
+    <string name="main_button_name">Показать лог</string>
+
+    <!-- Константы -->
+    <string name="log_application_id" translatable="false">APPLICATION</string>
+    <string name="log_activity_id" translatable="false">ACTIVITY</string>
+    <string name="log_viewgroup_id" translatable="false">VIEWGROUP</string>
+    <string name="log_view_id" translatable="false">VIEW</string>
+    <string name="log_all_id" translatable="false">ALL</string>
+
+</resources>
