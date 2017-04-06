@@ -6,13 +6,23 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.support.v7.widget.AppCompatButton;
 
+
+/**
+ * Этот класс реализует стандартный AppCompatButton, не изменяя ее. Нужен для демонстрации
+ * жизненного цикла View.
+ * Добавлены вызовы функций, связанных с жизненным циклом View и запись вызовов в список.
+ */
 public class NewButton extends AppCompatButton {
 
+    // Переменные
     private final TheApplication applicationContext;
     private final String viewId;
     private final String thisButtonName;
     private static int buttonsCreated = 0;
 
+    /*
+     * Это конструктор, с него все начинается. Создается объект NewButton.
+     */
     public NewButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         if (!isInEditMode()) {
@@ -27,6 +37,9 @@ public class NewButton extends AppCompatButton {
         }
     }
 
+    /*
+     * После завершения создания, вызывается onFinishInflate. Далее начинается отрисовка.
+     */
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -35,6 +48,9 @@ public class NewButton extends AppCompatButton {
         }
     }
 
+    /*
+     * Эта функция привязывает объект к окну.
+     */
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -43,6 +59,9 @@ public class NewButton extends AppCompatButton {
         }
     }
 
+    /*
+     * Эта функция нужна, чтобы измерить размеры элемента.
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -51,6 +70,9 @@ public class NewButton extends AppCompatButton {
         }
     }
 
+    /*
+     * Эта функция вызывается, когда нужно назначить размеры и позицию для элемента
+     */
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
@@ -59,6 +81,9 @@ public class NewButton extends AppCompatButton {
         }
     }
 
+    /*
+     * Эта функция вызвается для отрисовки
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);

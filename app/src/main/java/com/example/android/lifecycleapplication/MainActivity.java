@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         applicationContext = (TheApplication) getApplicationContext();
         applicationContext.addLifecycleCallback(activityId, "MainActivity.onCreate");
 
-        // Инициализируем RecyclerView
+        // Инициализируем RecyclerView и LayoutManager
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_main);
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
@@ -72,11 +72,13 @@ public class MainActivity extends AppCompatActivity
         applicationContext.addLifecycleCallback(viewgroupId, "Привязка LayoutManager к RecyclerView");
         mRecyclerView.setHasFixedSize(true);
 
+        // Создаем адаптер и привызываем его к RecycleView
         mMainAdapter = new MainAdapter(this, this);
 
         mRecyclerView.setAdapter(mMainAdapter);
         applicationContext.addLifecycleCallback(viewgroupId, "Привязка MainAdapter к RecyclerView");
 
+        // SnapHelper нужен, чтобы при перемещении по RecyclerView, все красиво притягивалось
         SnapHelper snapHelper = new LinearSnapHelper();
         snapHelper.attachToRecyclerView(mRecyclerView);
         applicationContext.addLifecycleCallback(viewgroupId, "Установка SnapHelper для RecyclerView");
