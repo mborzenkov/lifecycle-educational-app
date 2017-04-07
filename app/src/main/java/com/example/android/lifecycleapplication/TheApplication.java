@@ -2,6 +2,7 @@ package com.example.android.lifecycleapplication;
 
 import android.app.Application;
 import android.content.res.Configuration;
+import android.util.Log;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,6 +30,8 @@ public class TheApplication extends Application {
     // на каждый тип (APPLICATION, ACTIVITY, ...) из которого будем потом получать данные и выводить
     // на форме.
     private static Map<String, List<String>> sLifecycleCallbacks = new HashMap<>();
+    private static final String DIVIDER = "|";
+    private static final String COUNTER = "Вызовов: ";
     private String applicationId;
     private String allTypesId;
 
@@ -106,7 +109,9 @@ public class TheApplication extends Application {
      * Данные в списке хранятся в порядке от самых новых к самым старым.
      * Список содержит не менее 10 последних, остальные значения могут быть удалены, в случае
      * нехватки памяти.
-     * Каждая строка состоит из: "ДатаВремя | ТипОтправителя: Вызов"
+     * Каждая строка состоит из: "ДатаВремя | ТипОтправителя: \nВызов |"
+     * Несколько повторяющихся вызовов подряд схлапываются в одну строку с указанием количества вызовов
+     * после второй черты.
      */
     public List<String> getLifecycleCallbacks(String componentType) {
         List<String> callbacksList = sLifecycleCallbacks.get(componentType);
@@ -116,22 +121,69 @@ public class TheApplication extends Application {
         return Collections.unmodifiableList(callbacksList);
     }
     /**
-     * Записывает вызов в список вызовов.
+     * Записывает вызов в список вызовов. В callback или componentType нельзя использовать символ |,
+     * так как он является служебным.
      * @param componentType Тип отправителя, из strings (например, APPLICATION)
      * @param callback Строка, идентифицирующая вызов
      */
     public void addLifecycleCallback(String componentType, String callback) {
+
+        // Функция перенесена в отдельную, эта оставлена для обратной совместимости
+        addLifecycleCallbackToComponent(componentType, componentType, callback);
+        addLifecycleCallbackToComponent(allTypesId, componentType, callback);
+
+    }
+
+    /**
+     * Записывает вызов в список вызовов. В callback или componentType нельзя использовать символ |,
+     * так как он является служебным.
+     * @param toComponent Под каким типом отправителя сделать запись
+     * @param fromComponent Тип отправителя, из strings (например, APPLICATION)
+     * @param callback Строка, идентифицирующая вызов
+     */
+    private void addLifecycleCallbackToComponent(String toComponent, String fromComponent, String callback) {
+
+        // Собираем первую версию Callback для записи в лог
         String dateFormatted = (new SimpleDateFormat("dd.MM.yy HH:mm:ss:SSS")).format(new Date(System.currentTimeMillis()));
-        String result = dateFormatted + " | " + componentType + ": " + callback;
-        List<String> callbacksList = sLifecycleCallbacks.get(componentType);
+        String result = dateFormatted + " " + DIVIDER + " " + fromComponent + ": \n" + callback + " " + DIVIDER;
+
+        // Смотрим соответствующий лог
+        List<String> callbacksList = sLifecycleCallbacks.get(toComponent);
         if (callbacksList != null) {
+
+            if (!callbacksList.isEmpty()) {
+
+                // Проверяем последнюю запись, не точно ли она такая же
+                String lastCallback = callbacksList.get(0);
+
+                String lastCallbackMainPart = callbacksList.get(0).split("\\|", 3)[1];
+                String thisCallbackMainPart = result.split("\\|", 3)[1];
+                if (lastCallbackMainPart.equals(thisCallbackMainPart)) {
+
+                    if (lastCallback.contains(COUNTER)) {
+                        // Плюсуем вызовы, если уже были повторы
+                        int count = Integer.valueOf(lastCallback.charAt(lastCallback.length() - 1)) + 1;
+                        result = lastCallback.substring(0, lastCallback.length() - 2) + count;
+                    } else {
+                        // Записываем первые 2 повтора
+                        result = lastCallback + " " + COUNTER + " " + 2;
+                    }
+
+                    callbacksList.set(0, result);
+                    return;
+                }
+
+            }
+
+            // Записи не идентичные, просто добавляем новую
             callbacksList.add(0, result);
+
         } else {
+            // Записей нет вообще, добавляем список и туда запись
             callbacksList = new ArrayList<>();
             callbacksList.add(result);
-            sLifecycleCallbacks.put(componentType, callbacksList);
+            sLifecycleCallbacks.put(toComponent, callbacksList);
         }
-        sLifecycleCallbacks.get(allTypesId).add(0, result);
     }
 
     /**
