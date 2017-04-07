@@ -86,6 +86,9 @@ public class NewRecyclerView extends RecyclerView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (!isInEditMode()) {
+            applicationContext.addLifecycleCallback(viewGroupId, "RecyclerView.onDraw");
+        }
     }
 
     /*
