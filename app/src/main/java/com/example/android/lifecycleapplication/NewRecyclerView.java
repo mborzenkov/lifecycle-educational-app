@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 
 /**
  * Этот класс расширяет RecyclerView и предназначен для демонстрации жизненного цикла ViewGroup.
@@ -38,7 +39,7 @@ public class NewRecyclerView extends RecyclerView {
     protected void onFinishInflate() {
         super.onFinishInflate();
         if (!isInEditMode()) {
-            applicationContext.addLifecycleCallback(viewGroupId, "RecycletView.onFinishInflate");
+            applicationContext.addLifecycleCallback(viewGroupId, "RecyclerView.onFinishInflate");
         }
     }
 
@@ -49,7 +50,7 @@ public class NewRecyclerView extends RecyclerView {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (!isInEditMode()) {
-            applicationContext.addLifecycleCallback(viewGroupId, "RecycletView.onAttachedToWindow");
+            applicationContext.addLifecycleCallback(viewGroupId, "RecyclerView.onAttachedToWindow");
         }
     }
 
@@ -61,7 +62,7 @@ public class NewRecyclerView extends RecyclerView {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         if (!isInEditMode()) {
-            applicationContext.addLifecycleCallback(viewGroupId, "RecycletView.onMeasure");
+            applicationContext.addLifecycleCallback(viewGroupId, "RecyclerView.onMeasure");
         }
     }
 
@@ -74,7 +75,7 @@ public class NewRecyclerView extends RecyclerView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
         if (!isInEditMode()) {
-            applicationContext.addLifecycleCallback(viewGroupId, "RecycletView.onLayout");
+            applicationContext.addLifecycleCallback(viewGroupId, "RecyclerView.onLayout");
         }
     }
 
@@ -85,9 +86,27 @@ public class NewRecyclerView extends RecyclerView {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+    }
+
+    /*
+     * Эта функция вызывается при добавлении дочерних элементов к ViewGroup
+     */
+    @Override
+    public void onViewAdded(View child) {
+        super.onViewAdded(child);
         if (!isInEditMode()) {
-            applicationContext.addLifecycleCallback(viewGroupId, "RecycletView.onDraw");
+            applicationContext.addLifecycleCallback(viewGroupId, "RecyclerView.onViewAdded(" + child.getClass().toString() + ")");
         }
     }
 
+    /*
+     * Эта функция вызывается при удалении дочерних элементов из ViewGroup
+     */
+    @Override
+    public void onViewRemoved(View child) {
+        super.onViewRemoved(child);
+        if (!isInEditMode()) {
+            applicationContext.addLifecycleCallback(viewGroupId, "RecyclerView.onViewRemoved(" + child.getClass().toString() + ")");
+        }
+    }
 }
